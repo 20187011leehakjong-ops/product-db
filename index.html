@@ -3,9 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>포장 이슈 관리 시스템</title>
+<title>포장 품질 이력 관리 시스템</title>
 
 <style>
+
 body{
 font-family:'맑은 고딕',sans-serif;
 background:#f5f6fa;
@@ -30,7 +31,9 @@ h1{
 color:#1f4e79;
 }
 
-input,textarea{
+input,
+textarea,
+select{
 width:100%;
 padding:10px;
 margin-top:5px;
@@ -47,12 +50,17 @@ cursor:pointer;
 border-radius:5px;
 }
 
+button:hover{
+background:#163752;
+}
+
 .issue{
 background:#fafafa;
 border-left:5px solid #1f4e79;
 margin-top:10px;
-padding:10px;
+padding:15px;
 }
+
 </style>
 </head>
 
@@ -60,7 +68,7 @@ padding:10px;
 
 <div class="container">
 
-<h1>포장 이슈 관리 시스템</h1>
+<h1>포장 품질 이력 관리 시스템</h1>
 
 <div class="card">
 
@@ -68,17 +76,58 @@ padding:10px;
 
 <input id="product" placeholder="제품명">
 
+<input id="customer" placeholder="업체명">
+
 <input id="lot" placeholder="LOT 번호">
 
 <input type="date" id="issueDate">
 
 <input id="writer" placeholder="등록자">
 
-<textarea id="issueContent" placeholder="이슈 내용"></textarea>
+<input
+id="productionQty"
+type="number"
+placeholder="생산수량 (EA)">
 
-<textarea id="actionContent" placeholder="조치 내용"></textarea>
+<input
+id="defectQty"
+type="number"
+placeholder="불량수량 (EA)">
 
-<button id="saveBtn">등록</button>
+<select id="defectType">
+<option value="">불량유형 선택</option>
+<option>실링불량</option>
+<option>인쇄불량</option>
+<option>절취불량</option>
+<option>접착불량</option>
+<option>포장재파손</option>
+<option>날인불량</option>
+<option>이물</option>
+<option>혼입</option>
+<option>자재불량</option>
+<option>기타</option>
+</select>
+
+<select id="defectGrade">
+<option value="">불량등급 선택</option>
+<option>치명불량</option>
+<option>중불량</option>
+<option>경불량</option>
+</select>
+
+<textarea
+id="issueContent"
+placeholder="이슈내용">
+</textarea>
+
+<textarea
+id="actionContent"
+placeholder="조치내용">
+</textarea>
+
+<button id="saveBtn">
+등록
+</button>
 
 </div>
 
@@ -86,9 +135,13 @@ padding:10px;
 
 <h2>검색</h2>
 
-<input id="searchText" placeholder="제품명 또는 LOT번호">
+<input
+id="searchText"
+placeholder="제품명 또는 LOT번호">
 
-<button id="searchBtn">검색</button>
+<button id="searchBtn">
+검색
+</button>
 
 </div>
 
@@ -98,8 +151,8 @@ padding:10px;
 
 <script type="module">
 
-import { initializeApp } from
-"https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 
 import {
 getFirestore,
@@ -107,8 +160,7 @@ collection,
 addDoc,
 getDocs
 }
-from
-"https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
+from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 
 const firebaseConfig = {
 apiKey: "AIzaSyAdQ2ISc6vf0fDp3xWIhSDQL9jkSk5bets",
@@ -122,13 +174,19 @@ appId: "1:952788297130:web:427fd82a7f1fe985b7b7d3"
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-const saveBtn = document.getElementById("saveBtn");
-const searchBtn = document.getElementById("searchBtn");
+const saveBtn =
+document.getElementById("saveBtn");
+
+const searchBtn =
+document.getElementById("searchBtn");
 
 saveBtn.addEventListener("click", async () => {
 
 const product =
 document.getElementById("product").value;
+
+const customer =
+document.getElementById("customer").value;
 
 const lot =
 document.getElementById("lot").value;
@@ -139,115 +197,12 @@ document.getElementById("issueDate").value;
 const writer =
 document.getElementById("writer").value;
 
-const issueContent =
-document.getElementById("issueContent").value;
-
-const actionContent =
-document.getElementById("actionContent").value;
-
-if(!product || !lot || !issueDate){
-alert("제품명, LOT번호, 발생일은 필수입니다.");
-return;
-}
-
-await addDoc(collection(db,"issues"),{
-
-product,
-lot,
-issueDate,
-writer,
-issueContent,
-actionContent,
-createdAt: Date.now()
-
-});
-
-alert("등록 완료");
-
-document.getElementById("product").value="";
-document.getElementById("lot").value="";
-document.getElementById("issueDate").value="";
-document.getElementById("writer").value="";
-document.getElementById("issueContent").value="";
-document.getElementById("actionContent").value="";
-
-});
-
-searchBtn.addEventListener("click", async () => {
-
-const keyword =
-document.getElementById("searchText")
-.value
-.toLowerCase();
-
-const snapshot =
-await getDocs(collection(db,"issues"));
-
-let data=[];
-
-snapshot.forEach(doc=>{
-data.push(doc.data());
-});
-
-data.sort((a,b)=>
-(b.createdAt||0)-(a.createdAt||0)
+const productionQty =
+Number(
+document.getElementById("productionQty").value
 );
 
-let html="";
-
-data.forEach(item=>{
-
-const match =
-
-keyword === "" ||
-
-(item.product||"")
-.toLowerCase()
-.includes(keyword)
-
-||
-
-(item.lot||"")
-.toLowerCase()
-.includes(keyword);
-
-if(match){
-
-html += `
-
-<div class="card issue">
-
-<b>제품명</b> : ${item.product}<br>
-<b>LOT</b> : ${item.lot}<br>
-<b>발생일</b> : ${item.issueDate}<br>
-<b>등록자</b> : ${item.writer || "-"}<br><br>
-
-<b>이슈내용</b><br>
-${item.issueContent || ""}
-
-<br><br>
-
-<b>조치내용</b><br>
-${item.actionContent || ""}
-
-</div>
-
-`;
-
-}
-
-});
-
-if(html===""){
-html="<div class='card'>검색 결과 없음</div>";
-}
-
-document.getElementById("result").innerHTML =
-html;
-
-});
-
-</script>
-
-</body>
-</html>
+const defectQty =
+Number(
+document.getElementById("defectQty").value
+)
