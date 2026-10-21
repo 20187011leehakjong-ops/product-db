@@ -1,11 +1,175 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <title>제품정보 관리시스템</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>제품정보 관리시스템</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:맑은 고딕,sans-serif;
+}
+
+body{
+    background:#f4f6f9;
+}
+
+header{
+    background:#1f4e79;
+    color:white;
+    text-align:center;
+    padding:20px;
+    font-size:28px;
+    font-weight:bold;
+}
+
+.container{
+    width:90%;
+    max-width:1200px;
+    margin:20px auto;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    margin-bottom:20px;
+    box-shadow:0 2px 10px rgba(0,0,0,0.1);
+}
+
+input, textarea{
+    width:100%;
+    padding:10px;
+    margin-top:10px;
+    margin-bottom:15px;
+    border:1px solid #ccc;
+    border-radius:5px;
+}
+
+button{
+    background:#1f4e79;
+    color:white;
+    border:none;
+    padding:10px 20px;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#163752;
+}
+
+.result{
+    margin-top:20px;
+}
+
+.issue{
+    background:#fff8dc;
+    border-left:5px solid orange;
+    padding:10px;
+    margin-top:10px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th,td{
+    border:1px solid #ddd;
+    padding:10px;
+    text-align:left;
+}
+
+th{
+    background:#1f4e79;
+    color:white;
+}
+</style>
+
 </head>
 <body>
-    <h1>제품정보 관리시스템</h1>
-    <p>GitHub Pages 연결 성공!</p>
-</body>
-</html>
+
+<header>
+제품정보 관리시스템
+</header>
+
+<div class="container">
+
+<div class="card">
+
+<h2>제품 검색</h2>
+
+<input
+type="text"
+id="searchInput"
+placeholder="제품명을 입력하세요">
+
+<button onclick="searchProduct()">
+검색
+</button>
+
+<div id="result" class="result"></div>
+
+</div>
+
+<div class="card">
+
+<h2>제품 등록</h2>
+
+<input id="name" placeholder="제품명">
+<input id="company" placeholder="업체명">
+<input id="manager" placeholder="담당자">
+<input id="factory" placeholder="공장">
+
+<textarea
+id="issue"
+placeholder="특이사항"></textarea>
+
+<button onclick="addProduct()">
+제품 등록
+</button>
+
+</div>
+
+<div class="card">
+
+<h2>전체 제품목록</h2>
+
+<table>
+
+<thead>
+<tr>
+<th>제품명</th>
+<th>업체명</th>
+<th>담당자</th>
+<th>공장</th>
+</tr>
+</thead>
+
+<tbody id="productTable">
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<script>
+
+let products = JSON.parse(localStorage.getItem("products")) || [
+
+{
+name:"헤라클레스",
+company:"A사",
+manager:"이학종",
+factory:"세종3공장",
+issue:"생산 특이사항 관리"
+},
+
+{
+name:"아
