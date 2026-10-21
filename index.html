@@ -94,9 +94,19 @@ id="defectQty"
 type="number"
 placeholder="불량수량 (EA)">
 
+<h3>불량유형 관리</h3>
+
 <input
-id="defectType"
-placeholder="불량유형 (직접 입력)">
+id="newDefectType"
+placeholder="신규 불량유형 추가">
+
+<button id="addDefectTypeBtn">
+유형 추가
+</button>
+
+<select id="defectType">
+<option value="">불량유형 선택</option>
+</select>
 
 <select id="defectGrade">
 <option value="">불량등급 선택</option>
