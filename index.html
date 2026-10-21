@@ -3,173 +3,126 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>제품정보 관리시스템</title>
+<title>포장 이슈 이력 관리 시스템</title>
 
 <style>
+
 *{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:맑은 고딕,sans-serif;
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'맑은 고딕',sans-serif;
 }
 
 body{
-    background:#f4f6f9;
+background:#f4f6f9;
 }
 
 header{
-    background:#1f4e79;
-    color:white;
-    text-align:center;
-    padding:20px;
-    font-size:28px;
-    font-weight:bold;
+background:#1f4e79;
+color:white;
+padding:20px;
+text-align:center;
+font-size:28px;
+font-weight:bold;
 }
 
 .container{
-    width:90%;
-    max-width:1200px;
-    margin:20px auto;
+width:95%;
+max-width:1400px;
+margin:20px auto;
 }
 
 .card{
-    background:white;
-    padding:20px;
-    border-radius:10px;
-    margin-bottom:20px;
-    box-shadow:0 2px 10px rgba(0,0,0,0.1);
+background:white;
+padding:20px;
+margin-bottom:20px;
+border-radius:10px;
+box-shadow:0 2px 8px rgba(0,0,0,0.1);
 }
 
-input, textarea{
-    width:100%;
-    padding:10px;
-    margin-top:10px;
-    margin-bottom:15px;
-    border:1px solid #ccc;
-    border-radius:5px;
+h2{
+margin-bottom:15px;
+}
+
+input,textarea{
+width:100%;
+padding:10px;
+margin-bottom:10px;
+border:1px solid #ccc;
+border-radius:5px;
 }
 
 button{
-    background:#1f4e79;
-    color:white;
-    border:none;
-    padding:10px 20px;
-    border-radius:5px;
-    cursor:pointer;
+background:#1f4e79;
+color:white;
+border:none;
+padding:10px 15px;
+cursor:pointer;
+border-radius:5px;
+margin-right:5px;
 }
 
 button:hover{
-    background:#163752;
+background:#17395a;
 }
 
-.result{
-    margin-top:20px;
+.issue-card{
+border-left:6px solid #1f4e79;
+padding:15px;
+margin-top:15px;
+background:#f9f9f9;
 }
 
-.issue{
-    background:#fff8dc;
-    border-left:5px solid orange;
-    padding:10px;
-    margin-top:10px;
+.issue-img{
+max-width:300px;
+margin-top:10px;
+border-radius:5px;
+border:1px solid #ddd;
 }
 
-table{
-    width:100%;
-    border-collapse:collapse;
+.info{
+margin:5px 0;
 }
 
-th,td{
-    border:1px solid #ddd;
-    padding:10px;
-    text-align:left;
+.count{
+font-weight:bold;
+color:#1f4e79;
+margin-bottom:10px;
 }
 
-th{
-    background:#1f4e79;
-    color:white;
-}
 </style>
 
 </head>
+
 <body>
 
 <header>
-제품정보 관리시스템
+포장 이슈 이력 관리 시스템
 </header>
 
 <div class="container">
 
 <div class="card">
 
-<h2>제품 검색</h2>
+<h2>이슈 검색</h2>
 
 <input
-type="text"
-id="searchInput"
-placeholder="제품명을 입력하세요">
+id="searchKeyword"
+placeholder="제품명 또는 LOT번호 입력">
 
-<button onclick="searchProduct()">
+<button onclick="searchIssue()">
 검색
 </button>
 
-<div id="result" class="result"></div>
-
 </div>
+
+<div id="searchResult"></div>
 
 <div class="card">
 
-<h2>제품 등록</h2>
+<h2>이슈 등록</h2>
 
-<input id="name" placeholder="제품명">
-<input id="company" placeholder="업체명">
-<input id="manager" placeholder="담당자">
-<input id="factory" placeholder="공장">
-
-<textarea
-id="issue"
-placeholder="특이사항"></textarea>
-
-<button onclick="addProduct()">
-제품 등록
-</button>
-
-</div>
-
-<div class="card">
-
-<h2>전체 제품목록</h2>
-
-<table>
-
-<thead>
-<tr>
-<th>제품명</th>
-<th>업체명</th>
-<th>담당자</th>
-<th>공장</th>
-</tr>
-</thead>
-
-<tbody id="productTable">
-</tbody>
-
-</table>
-
-</div>
-
-</div>
-
-<script>
-
-let products = JSON.parse(localStorage.getItem("products")) || [
-
-{
-name:"헤라클레스",
-company:"A사",
-manager:"이학종",
-factory:"세종3공장",
-issue:"생산 특이사항 관리"
-},
-
-{
-name:"아
+<input
+id="product"
+placeholder
